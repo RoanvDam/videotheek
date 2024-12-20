@@ -13,26 +13,31 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
+{ /* update function */}
 export const action = async ({
     params,
     request,
 } : ActionFunctionArgs) => {
   const formData = await request.formData();
   const dataFromForm = Object.fromEntries(formData);
+  const currentYear = Number(new Date().getFullYear());
 
-  const errors = {} as { releaseYear: string };;
-  if (Number(dataFromForm.releaseYear) < 1900) {
-    errors.releaseYear = "Release year must be more than 1900";
+  // check for errors
+  const errors = {} as { releaseYear: string}
+  if (Number(dataFromForm.releaseYear) < 1900 || Number(dataFromForm.releaseYear) > currentYear) {
+    errors.releaseYear = `The release year must be between 1900 and ${currentYear}`;
   }
 
+  // give errors to form
   if (Object.keys(errors).length > 0) {
     return json({ errors });
   }
 
+  // sql query to update movie
   const updatedMovie = await prisma.movies.update({
     where: {
         id: Number(params.movieId)
-    }, // Update movie with id = 2
+    },
     data: {
         title: String(dataFromForm.title),
         genre: String(dataFromForm.genre),
@@ -41,9 +46,11 @@ export const action = async ({
     },
   });
 
-  return redirect(`/`);
+  // redirect to index page
+  return redirect("/");
 }
 
+// load selected movie. params is the url
 export const loader = async ({
     params,
   }: LoaderFunctionArgs) => {
@@ -56,6 +63,7 @@ export const loader = async ({
         throw new Response("Not Found", { status: 404 });
     }
     
+    // return selected movie to form
     return json({ movie });
 };
 

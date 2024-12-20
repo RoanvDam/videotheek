@@ -3,10 +3,14 @@ import type { MetaFunction } from "@remix-run/node";
 import type { LinksFunction } from "@remix-run/node";
 import React from "react";
 import Header from "./components/header";
+import { useEffect } from "react";
 
-import "./tailwind.css";
+import styles from "./tailwind.css?url";
 
 export const meta: MetaFunction = () => {
+  useEffect(() => {
+    console.log("App hydrated on the client");
+  }, []);
   return [
     { title: "Videotheek" },
     { name: "description", content: "Stageopdracht" },
@@ -20,10 +24,7 @@ export const links: LinksFunction = () => [
     href: "https://fonts.gstatic.com",
     crossOrigin: "anonymous",
   },
-  {
-    rel: "stylesheet",
-    href: "https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap",
-  },
+  { rel: "stylesheet", href: styles },
 ];
 
 // https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap

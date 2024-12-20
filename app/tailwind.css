@@ -10,4 +10,7 @@ body {
     color-scheme: dark;
   }
 
+  width: 100%;
+  overflow-x: hidden;
+
 }
